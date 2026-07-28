@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-2026-07-28：项目主线定为 OpenCUA（用户确认，见 [[fara-vs-opencua]]）。conda 环境 `trace` 已建于 /scratch4/kding1/envs/trace（Python 3.11 + vllm≥0.12 + huggingface_hub + openai），是本项目的专用环境。部署材料在 /scratch4/kding1/Trace/opencua/（slurm 脚本 + README + 官方仓库浅克隆 OpenCUA-ref，已 gitignore）。
+2026-07-28：项目主线定为 OpenCUA（用户确认，见 [[fara-vs-opencua]]）。conda 环境 `trace` 已建于 /scratch4/kding1/envs/trace（Python 3.11 + vllm 0.26.0 + torch 2.11.0+cu130 + huggingface_hub 1.25.1 + openai，8.2G，2026-07-28 装毕验证），是本项目的专用环境。部署材料在 /scratch4/kding1/Trace/opencua/（slurm 脚本 + README + 官方仓库浅克隆 OpenCUA-ref，已 gitignore）。
 
 之前的 UI-TARS 部署已废弃（任务取消、权重删除、记忆已删）；uitars/ 目录下脚本留作参考。
 
