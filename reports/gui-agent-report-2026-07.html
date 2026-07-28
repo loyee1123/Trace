@@ -1,0 +1,341 @@
+<title>GUI Agent 选型报告 · 会学习使用习惯的桌面智能体</title>
+<style>
+  :root {
+    --bg: #f6f7f6;
+    --surface: #ffffff;
+    --ink: #1d2733;
+    --ink-soft: #4c5a68;
+    --ink-faint: #7c8894;
+    --line: #dde3e2;
+    --accent: #0e6e63;
+    --accent-soft: #e3f0ed;
+    --observe: #2a6f8e;
+    --learn: #96660f;
+    --act: #5a4f96;
+    --observe-bg: #e8f1f6;
+    --learn-bg: #f8f0dd;
+    --act-bg: #eceafa;
+    --code-bg: #edf0ef;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151a1f;
+      --surface: #1d242b;
+      --ink: #e6ebef;
+      --ink-soft: #aeb9c2;
+      --ink-faint: #7c8894;
+      --line: #313b44;
+      --accent: #4fb8a8;
+      --accent-soft: #1c3330;
+      --observe: #6db3d1;
+      --learn: #d8a84e;
+      --act: #a89ae0;
+      --observe-bg: #1c2b34;
+      --learn-bg: #322a1a;
+      --act-bg: #272338;
+      --code-bg: #12171c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151a1f; --surface: #1d242b; --ink: #e6ebef; --ink-soft: #aeb9c2;
+    --ink-faint: #7c8894; --line: #313b44; --accent: #4fb8a8; --accent-soft: #1c3330;
+    --observe: #6db3d1; --learn: #d8a84e; --act: #a89ae0;
+    --observe-bg: #1c2b34; --learn-bg: #322a1a; --act-bg: #272338; --code-bg: #12171c;
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f7f6; --surface: #ffffff; --ink: #1d2733; --ink-soft: #4c5a68;
+    --ink-faint: #7c8894; --line: #dde3e2; --accent: #0e6e63; --accent-soft: #e3f0ed;
+    --observe: #2a6f8e; --learn: #96660f; --act: #5a4f96;
+    --observe-bg: #e8f1f6; --learn-bg: #f8f0dd; --act-bg: #eceafa; --code-bg: #edf0ef;
+  }
+
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .eyebrow {
+    font-size: 12.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 14px;
+  }
+  h1 {
+    font-size: clamp(26px, 4.5vw, 38px); line-height: 1.3; font-weight: 700;
+    letter-spacing: -0.01em; text-wrap: balance; margin: 0 0 10px;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 17px; max-width: 40em; margin: 0 0 8px; }
+  .meta { color: var(--ink-faint); font-size: 13.5px; margin-bottom: 40px; }
+
+  h2 {
+    font-size: 22px; font-weight: 700; margin: 56px 0 16px;
+    padding-top: 24px; border-top: 1px solid var(--line); text-wrap: balance;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; margin-top: 40px; }
+  h3 { font-size: 17px; font-weight: 700; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; max-width: 46em; }
+  ul, ol { margin: 0 0 16px; padding-left: 1.4em; max-width: 44em; }
+  li { margin-bottom: 6px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover, a:focus-visible { border-bottom-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  strong { font-weight: 650; }
+
+  .tldr {
+    background: var(--accent-soft); border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0; padding: 18px 22px; margin: 0 0 8px;
+  }
+  .tldr p { margin-bottom: 10px; }
+  .tldr p:last-child { margin-bottom: 0; }
+
+  /* 三层架构图 */
+  .stack { display: flex; flex-direction: column; gap: 0; margin: 24px 0 8px; }
+  .layer {
+    display: grid; grid-template-columns: 130px 1fr; gap: 16px;
+    border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px;
+    background: var(--surface);
+  }
+  .layer + .arrow { text-align: center; color: var(--ink-faint); font-size: 15px; line-height: 1.6; padding: 2px 0; }
+  .layer-tag { font-weight: 700; font-size: 15px; align-self: start; padding-top: 2px; }
+  .layer-body { color: var(--ink-soft); font-size: 14.5px; }
+  .layer-body .who { color: var(--ink); font-weight: 600; }
+  .layer.observe { background: var(--observe-bg); border-color: transparent; }
+  .layer.observe .layer-tag { color: var(--observe); }
+  .layer.learn { background: var(--learn-bg); border-color: transparent; }
+  .layer.learn .layer-tag { color: var(--learn); }
+  .layer.act { background: var(--act-bg); border-color: transparent; }
+  .layer.act .layer-tag { color: var(--act); }
+  @media (max-width: 560px) { .layer { grid-template-columns: 1fr; gap: 4px; } }
+
+  /* 表格 */
+  .table-scroll { overflow-x: auto; margin: 20px 0 8px; border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; background: var(--surface); }
+  th {
+    text-align: left; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; padding: 12px 14px;
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--ink); font-weight: 650; white-space: nowrap; }
+  td .sub { display: block; font-weight: 400; font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+
+  .pill {
+    display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 9px;
+    border-radius: 999px; white-space: nowrap;
+  }
+  .pill.observe { background: var(--observe-bg); color: var(--observe); }
+  .pill.learn { background: var(--learn-bg); color: var(--learn); }
+  .pill.act { background: var(--act-bg); color: var(--act); }
+
+  /* 项目卡片 */
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 22px 24px; margin: 18px 0;
+  }
+  .card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .card-head h3 { margin: 0; font-size: 18px; }
+  .card-head .org { color: var(--ink-faint); font-size: 13.5px; }
+  .card p { font-size: 15px; }
+  .card .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-faint); margin: 10px 0 4px; }
+  .card .facts span b { color: var(--ink-soft); font-weight: 600; }
+
+  code {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 13.5px; background: var(--code-bg); padding: 1px 6px; border-radius: 5px;
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; margin: 10px 0 16px;
+  }
+  pre code { background: none; padding: 0; font-size: 13px; line-height: 1.6; }
+
+  .note {
+    border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px;
+    font-size: 14px; color: var(--ink-soft); background: var(--surface); margin: 16px 0;
+  }
+  .note b { color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    a { transition: border-color 120ms ease; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">调研报告 · 2026 年 7 月</div>
+  <h1>能学习你使用习惯的 GUI Agent：现成方案选型</h1>
+  <p class="subtitle">目标：找到操作电脑桌面应用、能长期观察你的操作习惯并自动学习、进而主动替你完成任务的现成工具与可二次开发框架。</p>
+  <p class="meta">共核实 6 个核心项目 + 若干补充选项 · 信息以 2026-07 各项目 GitHub / 官网为准</p>
+
+  <h2>一句话结论</h2>
+  <div class="tldr">
+    <p><strong>目前没有任何单一产品能完整做到「后台长期观察 → 学会你的习惯 → 主动替你操作」的闭环</strong>——这仍是 2026 年学术界和创业公司都在冲刺的方向。但这个闭环的三个环节各自都有成熟的现成项目，可以直接用或拼起来用：</p>
+    <p><strong>想直接用</strong>：装 <a href="https://github.com/screenpipe/screenpipe">Screenpipe</a>（24/7 本地记录你的屏幕操作，积累成可搜索的记忆库，并能据此触发自动化）+ <a href="https://github.com/bytedance/UI-TARS-desktop">UI-TARS Desktop</a>（用自然语言指挥它操作你的电脑）。<br>
+    <strong>想做研究/二次开发</strong>：以 <a href="https://github.com/simular-ai/Agent-S">Agent S3</a>（自带经验学习机制、OSWorld 超人类水平）为执行基座，参考 <a href="https://github.com/thunlp/ProactiveAgent">ProactiveAgent</a>（ICLR 2025，监控用户活动并主动提议）与 <a href="https://github.com/OpenAdaptAI/OpenAdapt">OpenAdapt</a>（从演示中学习工作流）的思路，把「观察层的记忆」接到「执行层」——这正是当前的开放研究命题。</p>
+  </div>
+
+  <h2>理解这个问题：三层架构</h2>
+  <p>「学习我的使用习惯并帮我做事」可以拆成三层，市面上的项目基本都只占其中一到两层：</p>
+  <div class="stack">
+    <div class="layer observe">
+      <div class="layer-tag">① 观察 / 记忆</div>
+      <div class="layer-body">在后台持续记录你在用什么 app、看了什么、做了什么操作，形成本地可查询的「数字记忆」。<br><span class="who">代表：Screenpipe、ActivityWatch</span></div>
+    </div>
+    <div class="arrow">↓ 从记录中提炼规律</div>
+    <div class="layer learn">
+      <div class="layer-tag">② 学习 / 预测</div>
+      <div class="layer-body">从演示或历史行为中学出可复用的工作流，或预测「用户现在可能需要什么」并主动提议。<br><span class="who">代表：OpenAdapt（演示学习）、ProactiveAgent（主动预测）</span></div>
+    </div>
+    <div class="arrow">↓ 把意图变成动作</div>
+    <div class="layer act">
+      <div class="layer-tag">③ 执行</div>
+      <div class="layer-body">看懂屏幕，真正控制鼠标键盘去操作桌面应用，完成任务。<br><span class="who">代表：UI-TARS Desktop、Agent S3、UFO²/UFO³</span></div>
+    </div>
+  </div>
+
+  <h2>核心项目对比</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>项目</th><th>层</th><th>平台</th><th>习惯学习方式</th><th>模型依赖</th><th>成本</th><th>上手难度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Screenpipe<span class="sub">YC S26 · 20.6k★ · MIT*</span></td>
+          <td><span class="pill observe">观察记忆</span></td>
+          <td>Win / Mac / Linux</td>
+          <td>24/7 后台记录屏幕+音频 → 本地 SQLite 记忆库，Pipes 按活动触发自动化</td>
+          <td>可全本地（Ollama / Whisper），无需 API key</td>
+          <td>源码免费；官方签名版 $25/月起</td>
+          <td>低（装 app 即用）</td>
+        </tr>
+        <tr>
+          <td>UI-TARS Desktop<span class="sub">字节跳动 · 38.3k★ · Apache-2.0</span></td>
+          <td><span class="pill act">执行</span></td>
+          <td>Win / Mac</td>
+          <td>不自动学习；自然语言下指令</td>
+          <td>云 API（豆包/Claude 等）或本地部署 UI-TARS-1.5 开源模型</td>
+          <td>软件免费 + 模型费用</td>
+          <td>低（下载桌面版即用）</td>
+        </tr>
+        <tr>
+          <td>Agent S3<span class="sub">Simular · 12.1k★ · Apache-2.0</span></td>
+          <td><span class="pill act">执行</span> <span class="pill learn">学习</span></td>
+          <td>Win / Mac / Linux</td>
+          <td>episodic memory + 从经验改进；Behavior Best-of-N 选优</td>
+          <td>主模型 API（推荐 GPT-5）+ grounding 模型（UI-TARS-1.5-7B）</td>
+          <td>免费 + 模型费用</td>
+          <td>中（pip 装，Python SDK）</td>
+        </tr>
+        <tr>
+          <td>OpenAdapt<span class="sub">1.7k★ · MIT · Beta</span></td>
+          <td><span class="pill learn">学习</span> <span class="pill act">执行</span></td>
+          <td>Win / Mac / Linux / 浏览器 / Citrix</td>
+          <td>录制你的一次演示 → 编译成确定性可重放的工作流</td>
+          <td>正常运行零模型调用；修复时可选 AI</td>
+          <td>免费</td>
+          <td>中（pip 装）</td>
+        </tr>
+        <tr>
+          <td>UFO² / UFO³<span class="sub">微软 · 开源</span></td>
+          <td><span class="pill act">执行</span></td>
+          <td>UFO² 仅 Windows；UFO³ 跨设备</td>
+          <td>RAG 知识库积累；不做被动观察</td>
+          <td>GPT-4o / Azure / Qwen / Claude 等 API</td>
+          <td>免费 + 模型费用</td>
+          <td>中（配置文件较多）</td>
+        </tr>
+        <tr>
+          <td>ProactiveAgent<span class="sub">清华 THUNLP · ICLR 2025 · 640★</span></td>
+          <td><span class="pill observe">观察</span> <span class="pill learn">学习</span></td>
+          <td>Win / Mac + 浏览器</td>
+          <td>ActivityWatch 实时监测活动 → 预测需求 → 托盘通知主动提议</td>
+          <td>GPT-4o / Claude API，或其微调的 LLaMA/Qwen 模型</td>
+          <td>免费 + 模型费用</td>
+          <td>偏高（研究代码）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">* Screenpipe 源码对非商业使用免费，官方预编译签名版为订阅制。</p>
+
+  <h2>项目详情</h2>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/screenpipe/screenpipe">Screenpipe</a></h3><span class="org">最贴合「长期观察自动学习」的一个</span></div>
+    <p>本地优先的 24/7 屏幕+音频记录器：事件驱动截图（切换 app、点击、输入停顿时触发），同时抓取系统无障碍树文本 + OCR，全部存进本机 SQLite——没有数据上云。之后你可以用自然语言搜索「我上周在那个网页上看到的表格」，像回放 DVR 一样浏览一整天的操作历史。</p>
+    <p>关键的是它的 <strong>Pipes 系统</strong>：用 markdown 定义的小 agent，可以查询你的屏幕记忆、按你的活动被触发、调 API 执行操作——内置了会议纪要、每日回顾、standup 汇报等。还提供 MCP server（<code>claude mcp add screenpipe -- npx -y screenpipe-mcp@latest</code>），可以直接把你的屏幕记忆接给 Claude。资源占用约 CPU 5–10%、每月 20GB 存储。</p>
+    <div class="facts"><span><b>定位：</b>观察记忆层的事实标准</span><span><b>隐私：</b>全本地，可离线</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/bytedance/UI-TARS-desktop">UI-TARS Desktop / Agent TARS</a></h3><span class="org">字节跳动 · 开源执行层里最能打的</span></div>
+    <p>下载即用的跨平台桌面 app：截图 → 视觉模型理解界面 → 直接控制鼠标键盘，你用自然语言描述任务即可。背后的 UI-TARS 模型在 OSWorld 等基准上超过 Claude Computer Use 与 GPT-4o，模型本身也开源（Hugging Face 可下载 UI-TARS-1.5 本地部署，也可走火山引擎/Anthropic 云 API）。生态里还有 Agent TARS CLI（<code>npx @agent-tars/cli@latest</code>）覆盖浏览器与终端场景，支持 MCP 扩展。</p>
+    <div class="facts"><span><b>定位：</b>即装即用的「动手」能力</span><span><b>局限：</b>不会自己观察学习你的习惯</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/simular-ai/Agent-S">Agent S3</a></h3><span class="org">Simular · 最适合做研究基座</span></div>
+    <p>2025 年 12 月发布的 S3 是第一个在 OSWorld 上超越人类水平（72.6%）的计算机使用 agent。框架自带分层规划 + <strong>episodic memory（情景记忆）</strong>，会从执行经验中持续改进，并用 Behavior Best-of-N 在多条执行轨迹中选优。<code>pip install gui-agents</code> 即装，提供 CLI 和 Python SDK（<code>AgentS3</code>、<code>OSWorldACI</code> 类），二次开发接口清晰——如果你的研究方向是「把用户习惯记忆注入 agent」，这是最顺手的起点。需要配主模型 API（推荐 GPT-5）+ 一个 grounding 模型（推荐 UI-TARS-1.5-7B，可托管在 HF 推理端点）。</p>
+    <div class="facts"><span><b>定位：</b>执行 + 经验学习，科研首选</span><span><b>许可：</b>Apache 2.0</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/OpenAdaptAI/OpenAdapt">OpenAdapt</a></h3><span class="org">「演示一遍让它学会」路线的代表</span></div>
+    <p>思路与众不同：你把一个重复性任务<strong>操作一遍</strong>，它录下你的点击、键盘和屏幕证据（结构、无障碍树、视觉、OCR、空间信息），然后<strong>编译成一个确定性的本地可重放脚本</strong>——健康运行时零模型调用、零 API 费用，界面变化时才走「受控修复」流程（宁可停下也不瞎猜）。适合把你固定的高频工作流一次性固化下来。<code>pip install openadapt[browser]</code> 起步，另有 Windows/macOS/Linux/Citrix 扩展。</p>
+    <div class="facts"><span><b>定位：</b>演示学习 → 确定性自动化</span><span><b>状态：</b>Beta，1.7k★</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/microsoft/UFO">UFO² / UFO³ Galaxy</a></h3><span class="org">微软 · Windows 用户的深度集成选项</span></div>
+    <p>UFO²（2025-04，已进入长期支持）是 Windows 专用的「桌面 AgentOS」：HostAgent 调度多个 AppAgent，混合 GUI 点击与 Windows 原生 API 调用，比纯视觉方案更稳，还能通过推测性多动作减少 51% 的模型调用。2025-11 的 UFO³ Galaxy 进一步做多设备编排（Windows/Linux/Android）。配置项较多（API key、设备池等），偏工程化。</p>
+    <div class="facts"><span><b>定位：</b>Windows 深度执行</span><span><b>模型：</b>GPT-4o / Azure / Qwen / Claude 均可</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3><a href="https://github.com/thunlp/ProactiveAgent">ProactiveAgent</a></h3><span class="org">清华 THUNLP · ICLR 2025 · 「主动性」研究代表作</span></div>
+    <p>最接近你说的「长期观察后主动帮忙」的学术实现：用 <a href="https://activitywatch.net/">ActivityWatch</a>（本身就是个优秀的开源行为追踪器）实时监测你在编码、写作、日常场景中的活动，agent 预测你此刻可能需要什么，通过系统托盘通知主动提议，你可以接受/拒绝/忽略——这些反馈由一个 F1=0.918 的奖励模型消化。已发布基于 LLaMA 和 Qwen 微调的专用模型。研究代码性质，工程成熟度一般，但思路和数据集对二次开发很有价值。</p>
+    <div class="facts"><span><b>定位：</b>观察 + 主动预测的研究框架</span><span><b>依赖：</b>ActivityWatch + LLM API</span></div>
+  </div>
+
+  <h3>其他值得知道的</h3>
+  <ul>
+    <li><a href="https://github.com/browser-use/browser-use">Browser Use</a> — 如果任务主要在浏览器里，DOM 级操作比纯视觉方案更快更准，是网页自动化的事实标准。</li>
+    <li><a href="https://github.com/OpenInterpreter/open-interpreter">Open Interpreter</a> — 代码执行 + GUI 混合的万金油，适合「能用脚本就不点鼠标」的场景。</li>
+    <li><a href="https://claude.com/claude-code">Claude 桌面版 / Computer Use</a> — Anthropic 官方的计算机使用能力，商业方案里体验最完整的之一。</li>
+    <li><a href="https://activitywatch.net/">ActivityWatch</a> — 纯观察层的轻量开源方案（只记录 app 使用时间与窗口标题，不截图），隐私顾虑最小。</li>
+  </ul>
+
+  <h2>两条路线的上手步骤</h2>
+
+  <h3>路线 A：即装即用（个人电脑上）</h3>
+  <ol>
+    <li><strong>装 Screenpipe</strong>：从 <a href="https://screenpi.pe">screenpi.pe</a> 下载，或源码构建（免费）。让它跑一两周，积累你的操作记忆。</li>
+    <li><strong>装 UI-TARS Desktop</strong>：从 <a href="https://github.com/bytedance/UI-TARS-desktop/releases">GitHub Releases</a> 下载，配一个模型（最省事走云 API；有 GPU 可本地部署 UI-TARS-1.5-7B）。</li>
+    <li><strong>连接两者</strong>：通过 Screenpipe 的 MCP server 把「你的屏幕记忆」提供给 agent，让它在执行任务时能参考你的历史习惯；再用 Pipes 把高频场景（会议纪要、日报）做成按活动自动触发的小自动化。</li>
+    <li>固定的重复性流程，用 <strong>OpenAdapt</strong> 演示一遍固化成零成本的可重放脚本。</li>
+  </ol>
+
+  <h3>路线 B：科研 / 二次开发</h3>
+  <pre><code># 执行基座：Agent S3
+pip install gui-agents
+# macOS 另需: brew install tesseract
+# 配置主模型 (如 GPT-5 / Claude) + grounding 模型 (UI-TARS-1.5-7B)
+
+# 观察层数据源：ActivityWatch / Screenpipe 的本地 API (localhost:3030)
+# 主动性机制参考：git clone https://github.com/thunlp/ProactiveAgent</code></pre>
+  <p>值得做的研究命题恰好就是现在的空白：<strong>把观察层积累的用户习惯记忆（Screenpipe/ActivityWatch 的行为流）注入执行层 agent 的规划过程</strong>。Agent S3 的 episodic memory 接口、ProactiveAgent 的需求预测数据集、OpenAdapt 的演示编译思路，都是现成的积木；相关综述可看 <a href="https://arxiv.org/abs/2411.18279">Large Language Model-Brained GUI Agents: A Survey</a>。</p>
+
+  <h2>注意事项</h2>
+  <ul>
+    <li><strong>隐私</strong>：观察类工具会记录你屏幕上的一切（密码框通常会规避，但聊天、邮件都在内）。优先选全本地存储的方案（Screenpipe、ActivityWatch），并用其数据权限配置限制 AI 可访问的范围。</li>
+    <li><strong>成本</strong>：执行层 agent 每一步都要调用视觉模型，重度使用时 API 费用可观；本地部署 UI-TARS-1.5-7B 需要一张够用的 GPU。OpenAdapt 的「编译后零模型调用」在成本上是异类优势。</li>
+    <li><strong>部署位置</strong>：这些工具都需要图形桌面环境，要装在你自己的电脑上——HPC 集群节点（无 GUI）跑不了执行层，但可以用集群 GPU 托管 UI-TARS 模型供本地 agent 远程调用。</li>
+    <li><strong>可靠性</strong>：GUI agent 在 OSWorld 上最好成绩约 72%，意味着复杂任务仍有失败率。涉及不可逆操作（付款、发送、删除）务必开确认模式。</li>
+  </ul>
+</div>
