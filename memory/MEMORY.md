@@ -7,3 +7,4 @@
 - [GitHub 远端仓库](trace-github-repo.md) — origin = github.com/loyee1123/Trace.git，每次工作后记忆更新 + commit + push
 - [OSWorld 跑分路径](osworld-run-options.md) — 集群无 Docker/KVM；用 Modal/Daytona 云沙箱或个人电脑 Docker，claude-fable-5 直接可跑
 - [UI-TARS 集群部署](uitars-cluster-deploy.md) — Aria_conda 环境自带 vLLM；sbatch uitars/serve_uitars.slurm 起服务，笔记本 SSH 隧道连
+- [重动作先确认](confirm-before-heavy-actions.md) — 下大模型/提交GPU任务/装大环境前必须等用户明确同意，探查和写脚本可先行
