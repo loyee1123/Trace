@@ -5,3 +5,4 @@
 - [记忆库工作规范](memory-workflow-conventions.md) — 用户指定：一文一事实、先查重、绝对日期、更新后 commit
 - [产出必须放工作目录](outputs-under-working-dir.md) — 所有文件一律放 /scratch4/kding1/Trace/ 底下，记忆库已迁移至此，旧路径为软链接
 - [GitHub 远端仓库](trace-github-repo.md) — origin = github.com/loyee1123/Trace.git，每次工作后记忆更新 + commit + push
+- [OSWorld 跑分路径](osworld-run-options.md) — 集群无 Docker/KVM；用 Modal/Daytona 云沙箱或个人电脑 Docker，claude-fable-5 直接可跑
