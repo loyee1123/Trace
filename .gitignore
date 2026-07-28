@@ -1,0 +1,3 @@
+uitars/logs/
+*.log
+__pycache__/
