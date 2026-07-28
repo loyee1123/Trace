@@ -1,3 +1,4 @@
 uitars/logs/
 *.log
 __pycache__/
+opencua/OpenCUA-ref/

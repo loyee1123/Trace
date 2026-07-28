@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH --job-name=opencua-vllm
+#SBATCH --partition=a100
+#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=08:00:00
+#SBATCH --output=/scratch4/kding1/Trace/opencua/logs/vllm-%j.log
+
+export HF_HOME=/scratch4/kding1/huggingface/hf-home
+
+echo "== vLLM serving OpenCUA-7B on node: $(hostname) port 8000 =="
+
+/scratch4/kding1/envs/trace/bin/vllm serve xlangai/OpenCUA-7B \
+    --served-model-name opencua-7b \
+    --trust-remote-code \
+    --host 0.0.0.0 --port 8000 \
+    --max-model-len 32768
