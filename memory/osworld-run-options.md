@@ -11,4 +11,6 @@ metadata:
 2. 正式子集：OSWorld harness（https://github.com/xlang-ai/OSWorld），`--provider_name modal/daytona` 云沙箱模式不需本地 KVM，集群登录节点也能发起；`--model claude-fable-5`，先 `--domain chrome` 小规模跑（几美元），全量 369 任务需几十上百美元 API 费。
 3. 复现榜单：AWS provider 并行（约 1h）；注意榜单 85% 是 OSWorld-Verified 配置（修订任务集 + 官方 harness 设定），普通配置分数有出入；上榜需联系维护者，部分任务要 Google OAuth。
 
+2026-07-28 补充（用户决定先走路径 1 本地尝鲜）：quickstart 容器默认模型 Claude Opus 4.8，模型可在 Streamlit UI 侧栏改（可手填 claude-fable-5）；入口 http://localhost:8080；容器内虚拟桌面与宿主机隔离，但勿在其中登录真实账号（提示注入风险）。
+
 参见 [[gui-agent-survey-2026-07]]。
