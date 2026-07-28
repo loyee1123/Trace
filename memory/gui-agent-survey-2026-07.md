@@ -19,5 +19,7 @@ metadata:
 
 2026-07-28 补充核实 Anthropic 产品线：Computer Use 已于 2026-03-24 内置 macOS Claude 桌面 app（research preview，Pro/Max）；Claude Cowork 2026-07-07 起支持 web/移动端云端执行（Dispatch 派任务）；另有 Claude in Chrome 浏览器控制。对比结论：个人使用若有 macOS+订阅则 Claude 系体验最完整；科研仍选 UI-TARS 系（唯一开放权重、可集群部署/微调）。两家都无「长期观察学习习惯」能力，观察层仍需 Screenpipe。
 
+2026-07-28 榜单核实（llm-stats 等）：绝对榜首已是闭源模型——OSWorld-Verified 前列 Claude Fable 5 / Mythos 5 约 85%、字节 Seed 2.1 Pro 78.8%、GPT-5.4 自报 75%；ScreenSpot-Pro 榜首 Claude Opus 4.8（87.9%）。UI-TARS-1.5-7B 已非 SOTA，但仍是开放权重里的社区标准 grounding 基线（Agent S3 官方推荐、文献可比性好）；开源替代关注 Qwen3-VL 系列（ScreenSpot 95.8%，榜近饱和）。科研结论不变：基线要「公认+可控」而非 SOTA，实验建议 UI-TARS 与 Qwen3-VL 双 grounding 对比。
+
 **Why:** 用户明确表示两条路线都要，后续大概率会继续推进部署或研究选题。
 **How to apply:** 后续讨论 GUI agent 时以此结论为起点，不必重新调研；注意执行层工具需图形桌面（用户 HPC 节点跑不了，但集群 GPU 可托管 UI-TARS-1.5-7B 供远程调用）。参见 [[user-profile]]。
