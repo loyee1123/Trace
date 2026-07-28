@@ -9,3 +9,4 @@
 - [重动作先确认](confirm-before-heavy-actions.md) — 下大模型/提交GPU任务/装大环境前必须等用户明确同意，探查和写脚本可先行
 - [Fara vs OpenCUA 对比](fara-vs-opencua.md) — 桌面+习惯学习选 OpenCUA（AgentNet 真人演示管线），网页自动化选 Fara
 - [trace 环境与 OpenCUA 部署](trace-env-opencua.md) — conda env trace（vllm/hf/openai）已建；OpenCUA-7B 权重下载与 GPU 任务待批准
+- [工作日志 2026-07-28](worklog-2026-07-28.md) — 调研→三轮选型定 OpenCUA→trace 环境就绪；权重与 GPU 任务待批准
