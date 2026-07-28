@@ -21,5 +21,7 @@ metadata:
 
 2026-07-28 榜单核实（llm-stats 等）：绝对榜首已是闭源模型——OSWorld-Verified 前列 Claude Fable 5 / Mythos 5 约 85%、字节 Seed 2.1 Pro 78.8%、GPT-5.4 自报 75%；ScreenSpot-Pro 榜首 Claude Opus 4.8（87.9%）。UI-TARS-1.5-7B 已非 SOTA，但仍是开放权重里的社区标准 grounding 基线（Agent S3 官方推荐、文献可比性好）；开源替代关注 Qwen3-VL 系列（ScreenSpot 95.8%，榜近饱和）。科研结论不变：基线要「公认+可控」而非 SOTA，实验建议 UI-TARS 与 Qwen3-VL 双 grounding 对比。
 
+2026-07-28 重要更正（用户质疑后核实）：UI-TARS-2（2025-09 技术报告）权重从未开放（bytedance/UI-TARS issue #213 仍开着），字节开源线停在 1.5-7B，之后转闭源（Seed 2.1 Pro）。2026 开源 GUI 模型新格局：微软 Fara1.5（2026-07，4B/9B/27B，基于 Qwen3.5）、OpenCUA（XLANG/OSWorld 作者，NeurIPS 2025 Spotlight，72B 曾 OSWorld-Verified 开源最强 45%）、UI-Venus-1.5（蚂蚁，ScreenSpot-Pro 开源第一）、EvoCUA（OSWorld 开源第一）、GUI-Owl-1.5（阿里）。结论：UI-TARS Desktop 客户端试用仍配 1.5-7B（格式原生兼容+标准基线），但科研 grounding 基线应升级为 UI-Venus-1.5 / OpenCUA 等 2026 开源 SOTA 做对比。
+
 **Why:** 用户明确表示两条路线都要，后续大概率会继续推进部署或研究选题。
 **How to apply:** 后续讨论 GUI agent 时以此结论为起点，不必重新调研；注意执行层工具需图形桌面（用户 HPC 节点跑不了，但集群 GPU 可托管 UI-TARS-1.5-7B 供远程调用）。参见 [[user-profile]]。
