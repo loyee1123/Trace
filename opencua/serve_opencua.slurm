@@ -4,10 +4,14 @@
 #SBATCH --gres=gpu:a100:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH --time=08:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output=/scratch4/kding1/Trace/opencua/logs/vllm-%j.log
 
 export HF_HOME=/scratch4/kding1/huggingface/hf-home
+# 节点默认 module 会把老 gcc-9 的 libstdc++ 放进 LD_LIBRARY_PATH，缺 CXXABI_1.3.15；
+# 必须让 conda 环境自带的新版排最前
+module purge 2>/dev/null || true
+export LD_LIBRARY_PATH=/scratch4/kding1/envs/trace/lib:$LD_LIBRARY_PATH
 
 echo "== vLLM serving OpenCUA-7B on node: $(hostname) port 8000 =="
 

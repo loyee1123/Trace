@@ -10,3 +10,5 @@
 - [Fara vs OpenCUA 对比](fara-vs-opencua.md) — 桌面+习惯学习选 OpenCUA（AgentNet 真人演示管线），网页自动化选 Fara
 - [trace 环境与 OpenCUA 部署](trace-env-opencua.md) — conda env trace（vllm/hf/openai）已建；OpenCUA-7B 权重下载与 GPU 任务待批准
 - [工作日志 2026-07-28](worklog-2026-07-28.md) — 调研→三轮选型定 OpenCUA→trace 环境就绪；权重与 GPU 任务待批准
+- [集群 GPU/CUDA 硬约束](cluster-gpu-cuda-constraint.md) — 驱动 575=CUDA≤12.9 + glibc 2.28，PyPI vllm 全不可用，走 conda-forge cuda129 构建
+- [工作日志 2026-07-29](worklog-2026-07-29.md) — 权重 16G 下载毕、demo_client.py 写好、部署踩坑四连、conda-forge 解法；GPU 任务等批准
