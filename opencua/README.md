@@ -29,6 +29,15 @@ sbatch serve_opencua.slurm
 - user: 截图（base64 image_url）+ 任务文本；temperature=0
 - 输出：`pyautogui.click(x=…, y=…)` 式动作（绝对坐标，smart-resize 后）
 
-## 试用客户端（待写）
+## 试用客户端 `demo_client.py`
 
-笔记本端小循环：截屏 → 发给模型 → 解析 pyautogui 动作 → 确认后执行。基于官方 `vllm_inference.py` 改造。
+在**用户自己的电脑**上运行（非集群）。循环：截屏 → 发给模型 → 解析 pyautogui 动作 → smart-resize 坐标换算 → 逐步确认后执行。参考官方 OSWorld `opencua_agent.py` 的设计（3 图历史、qwen25 坐标）。
+
+```bash
+# 笔记本上
+pip install openai pyautogui pillow
+ssh -L 8000:<GPU节点>:8000 <集群登录节点>     # 另开终端保持隧道
+python demo_client.py "Open the browser and search for weather"
+```
+
+安全：每步动作需回车确认（`--auto` 可关）；pyautogui failsafe 鼠标甩左上角紧急中断；macOS 需授予终端"屏幕录制+辅助功能"权限。
