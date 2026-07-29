@@ -9,5 +9,6 @@ metadata:
 
 之前的 UI-TARS 部署已废弃（任务取消、权重删除、记忆已删）；uitars/ 目录下脚本留作参考。
 
-待批准动作：下载 xlangai/OpenCUA-7B 权重（约 17GB）、提交 GPU 服务任务（[[confirm-before-heavy-actions]]）。
+OpenCUA-7B 权重已于 2026-07-29 下载完毕（16G，28 个 safetensors 分片，位于 HF_HOME hub 缓存）。注意：`huggingface-cli` 已弃用且静默不工作（exit 0 但不下载），必须用 `hf download`。
+待批准动作：提交 GPU 服务任务 sbatch serve_opencua.slurm（[[confirm-before-heavy-actions]]）。
 OpenCUA 交互格式：system prompt "You are a GUI agent..."，截图+任务→输出 pyautogui 动作（绝对坐标）；官方 CLAUDE.md 在 OpenCUA-ref/ 内，含数据管线（录制→标准化→CoT）用法，研究阶段直接复用。

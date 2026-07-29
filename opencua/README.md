@@ -17,7 +17,7 @@
 # 1. 环境（已建好）：conda env "trace" = Python 3.11 + vllm≥0.12 + huggingface_hub + openai
 # 2. 下载权重（约 17GB，需批准）
 HF_HOME=/scratch4/kding1/huggingface/hf-home \
-  /scratch4/kding1/envs/trace/bin/huggingface-cli download xlangai/OpenCUA-7B
+  /scratch4/kding1/envs/trace/bin/hf download xlangai/OpenCUA-7B
 # 3. 起服务（需批准）
 sbatch serve_opencua.slurm
 # 4. 笔记本 SSH 隧道 -L 8000:<GPU节点>:8000，客户端连 http://localhost:8000/v1
