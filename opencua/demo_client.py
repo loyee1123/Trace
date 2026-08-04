@@ -42,7 +42,10 @@ MAX_IMAGES = 3   # 官方 OpenCUAAgent 默认: 只保留最近 3 张截图作为
 
 SYSTEM_PROMPT = (
     "You are a GUI agent. You are given a task and a screenshot of the screen. "
-    "You need to perform a series of pyautogui actions to complete the task."
+    "You need to perform a series of pyautogui actions to complete the task. "
+    "When you judge from the screenshot that the task is already complete, do not "
+    "output any more pyautogui actions; output terminate(status='success') instead. "
+    "If the task is impossible, output terminate(status='failure')."
 )
 
 pyautogui.FAILSAFE = True
@@ -67,6 +70,17 @@ def _robust_click(x=None, y=None, clicks=1, interval=0.1, button="left", **kw):
 pyautogui.click = _robust_click
 pyautogui.doubleClick = lambda x=None, y=None, **kw: _robust_click(x, y, clicks=2)
 pyautogui.rightClick = lambda x=None, y=None, **kw: _robust_click(x, y, button="right")
+
+
+class _Computer:
+    """官方 OpenCUA 动作空间里的 computer.* 调用兜底(terminate 在 exec 前已拦截)。"""
+    @staticmethod
+    def triple_click(x=None, y=None, **kw):
+        _robust_click(x, y, clicks=3)
+
+    @staticmethod
+    def terminate(status="success"):
+        pass
 
 
 def smart_resize(height, width, factor=28, min_pixels=3136, max_pixels=12845056):
@@ -107,7 +121,8 @@ def extract_actions(text):
     code = "\n".join(blocks) if blocks else text
     lines = [ln.strip() for ln in code.splitlines()]
     return [ln for ln in lines
-            if ln.startswith(("pyautogui.", "time.sleep", "terminate"))]
+            if ln.startswith(("pyautogui.", "time.sleep", "terminate",
+                              "computer."))]
 
 
 def rescale_coords(line, img_w, img_h):
@@ -202,7 +217,8 @@ def main():
                     continue
             else:
                 print(f"  -> 执行: {act}")
-            exec(act, {"pyautogui": pyautogui, "time": time})
+            exec(act, {"pyautogui": pyautogui, "time": time,
+                       "computer": _Computer})
 
         history.append({"b64": b64, "text": prompt, "reply": reply})
         time.sleep(2.0)  # 等界面响应后再截下一张(应用启动/页面加载偏慢)
