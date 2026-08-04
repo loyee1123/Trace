@@ -20,7 +20,17 @@ import base64
 import io
 import math
 import re
+import sys
 import time
+
+# Windows 高分屏: 必须在导入 pyautogui 前声明 DPI 感知，
+# 否则截图是物理像素而点击坐标是逻辑像素，两者错位
+if sys.platform == "win32":
+    import ctypes
+    try:
+        ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    except Exception:
+        ctypes.windll.user32.SetProcessDPIAware()
 
 import pyautogui
 from openai import OpenAI
@@ -37,6 +47,26 @@ SYSTEM_PROMPT = (
 
 pyautogui.FAILSAFE = True
 pyautogui.PAUSE = 0.5
+
+# 部分 Windows 应用不认 pyautogui 默认的瞬时 down/up，点击要有间隔才生效
+_raw_move = pyautogui.moveTo
+_raw_down = pyautogui.mouseDown
+_raw_up = pyautogui.mouseUp
+
+def _robust_click(x=None, y=None, clicks=1, interval=0.1, button="left", **kw):
+    if x is not None and y is not None:
+        _raw_move(x, y)
+        time.sleep(0.1)
+    for i in range(int(clicks)):
+        _raw_down(button=button)
+        time.sleep(0.06)
+        _raw_up(button=button)
+        if i < clicks - 1:
+            time.sleep(interval)
+
+pyautogui.click = _robust_click
+pyautogui.doubleClick = lambda x=None, y=None, **kw: _robust_click(x, y, clicks=2)
+pyautogui.rightClick = lambda x=None, y=None, **kw: _robust_click(x, y, button="right")
 
 
 def smart_resize(height, width, factor=28, min_pixels=3136, max_pixels=12845056):
