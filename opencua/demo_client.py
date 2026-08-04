@@ -121,7 +121,7 @@ def rescale_coords(line, img_w, img_h):
     return line
 
 
-def build_messages(task, history):
+def build_messages(task, history, note=""):
     """system + 历史步骤(仅最近 MAX_IMAGES 步带截图) + 当前截图。"""
     msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
     n = len(history)
@@ -139,6 +139,8 @@ def build_messages(task, history):
     (img_w, img_h), b64 = take_screenshot()
     prompt = (f"Task: {task}" if not history
               else f"Task: {task}\nPlease continue with the next action.")
+    if note:
+        prompt += "\n" + note
     msgs.append({"role": "user", "content": [
         {"type": "image_url",
          "image_url": {"url": f"data:image/png;base64,{b64}"}},
@@ -155,12 +157,21 @@ def main():
 
     client = OpenAI(base_url=BASE_URL, api_key="EMPTY")
     history = []
+    last_key, repeat = None, 0
 
     for step_no in range(1, MAX_STEPS + 1):
-        msgs, (img_w, img_h), b64, prompt = build_messages(args.task, history)
+        # 防死循环: 上一步动作重复过 → 明确告诉模型换思路, 并提温度跳出贪心输出
+        note, temp = "", 0
+        if repeat >= 1:
+            note = ("Note: your previous action was executed but the screen did "
+                    "not change as expected. Do NOT repeat the same action. "
+                    "Re-examine the screenshot and try a different approach "
+                    "(different element, position, or a keyboard shortcut).")
+            temp = 0.6
+        msgs, (img_w, img_h), b64, prompt = build_messages(args.task, history, note)
         print(f"\n===== Step {step_no}: 请求模型... =====")
         reply = client.chat.completions.create(
-            model=MODEL, messages=msgs, max_tokens=1024, temperature=0,
+            model=MODEL, messages=msgs, max_tokens=1024, temperature=temp,
         ).choices[0].message.content
         print(reply)
 
@@ -171,6 +182,15 @@ def main():
         if any("terminate" in a for a in actions):
             print("[✓] 模型判定任务结束。")
             break
+
+        key = "; ".join(actions)
+        if key == last_key:
+            repeat += 1
+            if repeat >= 3:
+                print("[!] 同一动作连续 4 次，疑似死循环，停止。")
+                break
+        else:
+            last_key, repeat = key, 0
 
         for act in actions:
             act = rescale_coords(act, img_w, img_h)
@@ -185,7 +205,7 @@ def main():
             exec(act, {"pyautogui": pyautogui, "time": time})
 
         history.append({"b64": b64, "text": prompt, "reply": reply})
-        time.sleep(1.0)  # 等界面响应后再截下一张
+        time.sleep(2.0)  # 等界面响应后再截下一张(应用启动/页面加载偏慢)
 
 
 if __name__ == "__main__":
