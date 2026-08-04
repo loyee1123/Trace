@@ -150,7 +150,7 @@ def build_messages(task, history):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("task", help="任务描述(英文)")
-    ap.add_argument("--auto", action="store_true", help="不逐步确认(慎用)")
+    ap.add_argument("--confirm", action="store_true", help="每步回车确认(默认连续执行)")
     args = ap.parse_args()
 
     client = OpenAI(base_url=BASE_URL, api_key="EMPTY")
@@ -174,14 +174,14 @@ def main():
 
         for act in actions:
             act = rescale_coords(act, img_w, img_h)
-            if args.auto:
-                print(f"  -> 执行: {act}")
-            else:
+            if args.confirm:
                 ans = input(f"  -> {act}   [回车=执行 / s=跳过 / q=退出] ")
                 if ans.strip().lower() == "q":
                     return
                 if ans.strip().lower() == "s":
                     continue
+            else:
+                print(f"  -> 执行: {act}")
             exec(act, {"pyautogui": pyautogui, "time": time})
 
         history.append({"b64": b64, "text": prompt, "reply": reply})
@@ -189,4 +189,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[✗] 已退出 (Ctrl+C)。")
+    except pyautogui.FailSafeException:
+        print("\n[✗] 已紧急停止 (鼠标甩到屏幕左上角)。")
