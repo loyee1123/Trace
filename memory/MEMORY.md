@@ -12,3 +12,4 @@
 - [工作日志 2026-07-28](worklog-2026-07-28.md) — 调研→三轮选型定 OpenCUA→trace 环境就绪；权重与 GPU 任务待批准
 - [集群 GPU/CUDA 硬约束](cluster-gpu-cuda-constraint.md) — 驱动 575=CUDA≤12.9 + glibc 2.28，PyPI vllm 全不可用，走 conda-forge cuda129 构建
 - [工作日志 2026-07-29](worklog-2026-07-29.md) — 权重 16G 下载毕、demo_client.py 写好、部署踩坑四连、conda-forge 解法；GPU 任务等批准
+- [工作日志 2026-08-04](worklog-2026-08-04.md) — demo 首次端到端跑通；Triton 工具链缺件、encoder 缓存、Windows DPI/点击/死循环修复
