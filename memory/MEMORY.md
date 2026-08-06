@@ -13,3 +13,4 @@
 - [集群 GPU/CUDA 硬约束](cluster-gpu-cuda-constraint.md) — 驱动 575=CUDA≤12.9 + glibc 2.28，PyPI vllm 全不可用，走 conda-forge cuda129 构建
 - [工作日志 2026-07-29](worklog-2026-07-29.md) — 权重 16G 下载毕、demo_client.py 写好、部署踩坑四连、conda-forge 解法；GPU 任务等批准
 - [工作日志 2026-08-04](worklog-2026-08-04.md) — demo 首次端到端跑通；Triton 工具链缺件、encoder 缓存、Windows DPI/点击/死循环修复
+- [工作日志 2026-08-06](worklog-2026-08-06.md) — demo 防死循环/终止判定迭代；Claude 双方案落地（Claude Code 订阅版 + API computer use 版）
