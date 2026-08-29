@@ -14,3 +14,4 @@
 - [工作日志 2026-07-29](worklog-2026-07-29.md) — 权重 16G 下载毕、demo_client.py 写好、部署踩坑四连、conda-forge 解法；GPU 任务等批准
 - [工作日志 2026-08-04](worklog-2026-08-04.md) — demo 首次端到端跑通；Triton 工具链缺件、encoder 缓存、Windows DPI/点击/死循环修复
 - [工作日志 2026-08-06](worklog-2026-08-06.md) — demo 防死循环/终止判定迭代；Claude 双方案落地（Claude Code 订阅版 + API computer use 版）
+- [开源 CUA 模型候选 2026-08](open-cua-models-2026-08.md) — 4×A100 80GB 可跑：Qwen3.8-27B(84.3%) / Holo3.1-35B-A3B；需新环境 vllm 0.27.1 cuda129
