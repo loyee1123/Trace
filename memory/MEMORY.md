@@ -6,7 +6,7 @@
 - [产出必须放工作目录](outputs-under-working-dir.md) — 所有文件一律放 /scratch4/kding1/Trace/ 底下，记忆库已迁移至此，旧路径为软链接
 - [GitHub 远端仓库](trace-github-repo.md) — origin = github.com/loyee1123/Trace.git，每次工作后记忆更新 + commit + push
 - [OSWorld 跑分路径](osworld-run-options.md) — 集群无 Docker/KVM；用 Modal/Daytona 云沙箱或个人电脑 Docker，claude-fable-5 直接可跑
-- [重动作先确认](confirm-before-heavy-actions.md) — 下大模型/提交GPU任务/装大环境前必须等用户明确同意，探查和写脚本可先行
+- [重动作先确认](confirm-before-heavy-actions.md) — 下大模型/提交GPU任务/装大环境前必须等用户明确同意；**批准选型≠批准起服务**，GPU 服务任务要用户当场说"起"才 sbatch，用完即 scancel
 - [Fara vs OpenCUA 对比](fara-vs-opencua.md) — 桌面+习惯学习选 OpenCUA（AgentNet 真人演示管线），网页自动化选 Fara
 - [trace 环境与 OpenCUA 部署](trace-env-opencua.md) — conda env trace（vllm/hf/openai）已建；OpenCUA-7B 权重下载与 GPU 任务待批准
 - [工作日志 2026-07-28](worklog-2026-07-28.md) — 调研→三轮选型定 OpenCUA→trace 环境就绪；权重与 GPU 任务待批准
@@ -15,3 +15,4 @@
 - [工作日志 2026-08-04](worklog-2026-08-04.md) — demo 首次端到端跑通；Triton 工具链缺件、encoder 缓存、Windows DPI/点击/死循环修复
 - [工作日志 2026-08-06](worklog-2026-08-06.md) — demo 防死循环/终止判定迭代；Claude 双方案落地（Claude Code 订阅版 + API computer use 版）
 - [开源 CUA 模型候选 2026-08](open-cua-models-2026-08.md) — 4×A100 80GB 可跑：Qwen3.8-27B(84.3%) / Holo3.1-35B-A3B；需新环境 vllm 0.27.1 cuda129
+- [工作日志 2026-08-29](worklog-2026-08-29.md) — Claude Code 方案 A 实测成功；Qwen3.8-27B 在现有 trace 环境(vllm 0.19.1)服务跑通，客户端 qwen/qwen_client.py 已移植；GPU 任务必须用户当场允许
