@@ -134,8 +134,8 @@ def build_system_prompt():
     )
 
 
-def load_demo(demo_dir):
-    """demos/<name>/demo.jsonl -> 给模型看的演示步骤清单 (坐标转 0-999 相对)."""
+def _demo_steps(demo_dir):
+    """demos/<name>/demo.jsonl -> 步骤清单文本 (坐标转 0-999 相对)."""
     lines = open(f"{demo_dir}/demo.jsonl", encoding="utf-8").read().strip().split("\n")
     meta = json.loads(lines[0])
     sw, sh = meta["screen_w"], meta["screen_h"]
@@ -153,14 +153,25 @@ def load_demo(demo_dir):
             out.append(f"{i}. press key {'+'.join(s['keys'])}")
         elif s["type"] == "scroll":
             out.append(f"{i}. scroll {'up' if s['dy'] > 0 else 'down'}")
-    return (
-        "A human has previously demonstrated exactly this task on this same computer. "
-        "Demonstration steps (coordinates are on the same 1000x1000 grid):\n"
-        + "\n".join(out)
-        + "\nFollow this demonstrated procedure step by step. The current screen should look "
-        "similar; verify each step's effect on the screenshot, re-locate the target element "
-        "if it moved slightly, and only deviate from the demonstration when necessary."
-    )
+    return "\n".join(out)
+
+
+def load_demo(demo_arg):
+    """逗号分隔的多个演示目录 -> 合并的参考文本."""
+    dirs = [d.strip() for d in demo_arg.split(",") if d.strip()]
+    blocks = []
+    for k, d in enumerate(dirs, 1):
+        head = (f"Demonstration {k} of {len(dirs)}:" if len(dirs) > 1
+                else "Demonstration steps (coordinates are on the same 1000x1000 grid):")
+        blocks.append(head + "\n" + _demo_steps(d))
+    intro = ("A human has previously demonstrated exactly this task on this same computer"
+             + (" multiple times. All demonstrations follow the same underlying procedure; "
+                "differences between them show where flexibility is allowed. Coordinates are "
+                "on the same 1000x1000 grid." if len(dirs) > 1 else ". "))
+    return (intro + "\n" + "\n\n".join(blocks)
+            + "\nFollow the demonstrated procedure step by step. The current screen should look "
+            "similar; verify each step's effect on the screenshot, re-locate the target element "
+            "if it moved slightly, and only deviate from the demonstration when necessary.")
 
 
 def build_instruction_prompt(instruction, actions, note="", demo=""):
@@ -316,7 +327,7 @@ def main():
     ap.add_argument("task")
     ap.add_argument("--think", action="store_true", help="开启模型 thinking(更准但更慢)")
     ap.add_argument("--confirm", action="store_true", help="每步回车确认")
-    ap.add_argument("--demo", default="", help="演示目录, 如 demos/download_ct (record_demo.py 录的)")
+    ap.add_argument("--demo", default="", help="演示目录, 多个用逗号分隔: demos/a,demos/b")
     args = ap.parse_args()
 
     client = OpenAI(base_url=BASE_URL, api_key="EMPTY")
