@@ -83,7 +83,8 @@ ACTION_DESC = """
 def build_tools_def():
     desc = "\n".join([
         "Use a mouse and keyboard to interact with a computer, and take screenshots.",
-        "* This is an interface to a desktop GUI. You do not have access to a terminal or applications menu. You must click on desktop icons to start applications.",
+        "* This is an interface to a Microsoft Windows 11 desktop GUI. You do not have access to a terminal.",
+        "* Windows conventions: desktop icons need `double_click` to open; taskbar icons, Start menu entries, links and buttons need a single `left_click`. A reliable way to open any application: press the `win` key, type the application name, then press `enter`.",
         "* Some applications may take time to start or process actions, so you may need to wait and take successive screenshots to see the results of your actions.",
         "* The screen's resolution is 1000x1000.",
         "* Whenever you intend to move the cursor to click on an element like an icon, you should consult a screenshot to determine the coordinates of the element before moving the cursor.",
