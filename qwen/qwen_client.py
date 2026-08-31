@@ -134,22 +134,22 @@ def build_system_prompt():
     )
 
 
-def build_instruction_prompt(instruction, actions):
+def build_instruction_prompt(instruction, actions, note=""):
     prev = "\n".join(f"Step {i + 1}: {a}" for i, a in enumerate(actions)) or "None"
     return ("\nPlease generate the next move according to the UI screenshot, instruction and previous actions.\n\n"
-            f"Instruction: {instruction}\n\nPrevious actions:\n{prev}")
+            f"Instruction: {instruction}\n\nPrevious actions:\n{prev}" + (f"\n\n{note}" if note else ""))
 
 
 def wrap_tool_response(parts):
     return [{"type": "text", "text": "<tool_response>\n"}] + parts + [{"type": "text", "text": "\n</tool_response>"}]
 
 
-def build_messages(instruction, screenshots, responses, actions):
+def build_messages(instruction, screenshots, responses, actions, note=""):
     """照搬 history.py: 第一轮 = 截图+指令, 后续轮 = <tool_response>截图</tool_response>; 旧截图折叠成文字."""
     total = len(screenshots)
     collapsed_before = max(0, total - IMAGE_MAX)   # 前 k 步折叠
     msgs = [{"role": "system", "content": [{"type": "text", "text": build_system_prompt()}]}]
-    instr = build_instruction_prompt(instruction, actions)
+    instr = build_instruction_prompt(instruction, actions, note)
     for step in range(1, total + 1):
         first = step == 1
         if step <= collapsed_before:
@@ -295,10 +295,17 @@ def main():
     for step in range(1, MAX_STEPS + 1):
         ow, oh, rw, rh, b64 = take_screenshot()
         screenshots.append(b64)
-        msgs = build_messages(args.task, screenshots, responses, actions)
+        note, temp = "", 0
+        if repeat >= 1:
+            note = ("Note: your previous action was executed but the screen did not change as "
+                    "expected. Do NOT repeat the same action. Try a different approach: e.g. "
+                    "double_click instead of left_click, a different element or position, or a "
+                    "keyboard shortcut.")
+            temp = 0.6
+        msgs = build_messages(args.task, screenshots, responses, actions, note)
         print(f"\n===== Step {step}: 请求模型 (截图 {ow}x{oh} -> {rw}x{rh}) =====")
         resp = client.chat.completions.create(
-            model=MODEL, messages=msgs, temperature=0, max_tokens=8192 if args.think else 2048,
+            model=MODEL, messages=msgs, temperature=temp, max_tokens=8192 if args.think else 2048,
             extra_body={"chat_template_kwargs": {"enable_thinking": bool(args.think)}},
         )
         reply = resp.choices[0].message.content or ""
