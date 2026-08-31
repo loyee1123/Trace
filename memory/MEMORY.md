@@ -16,3 +16,4 @@
 - [工作日志 2026-08-06](worklog-2026-08-06.md) — demo 防死循环/终止判定迭代；Claude 双方案落地（Claude Code 订阅版 + API computer use 版）
 - [开源 CUA 模型候选 2026-08](open-cua-models-2026-08.md) — 4×A100 80GB 可跑：Qwen3.8-27B(84.3%) / Holo3.1-35B-A3B；需新环境 vllm 0.27.1 cuda129
 - [工作日志 2026-08-29](worklog-2026-08-29.md) — Claude Code 方案 A 实测成功；Qwen3.8-27B 在现有 trace 环境(vllm 0.19.1)服务跑通，客户端 qwen/qwen_client.py 已移植；GPU 任务必须用户当场允许
+- [工作日志 2026-08-31](worklog-2026-08-31.md) — Qwen3.8 实测(死循环两轮修复+未决的点击拦截问题)；演示学习落地 record_demo.py + --demo 多演示；LoRA 微调路径设计
