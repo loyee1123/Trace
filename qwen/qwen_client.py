@@ -134,22 +134,52 @@ def build_system_prompt():
     )
 
 
-def build_instruction_prompt(instruction, actions, note=""):
+def load_demo(demo_dir):
+    """demos/<name>/demo.jsonl -> 给模型看的演示步骤清单 (坐标转 0-999 相对)."""
+    lines = open(f"{demo_dir}/demo.jsonl", encoding="utf-8").read().strip().split("\n")
+    meta = json.loads(lines[0])
+    sw, sh = meta["screen_w"], meta["screen_h"]
+    out = []
+    for i, ln in enumerate(lines[1:], 1):
+        s = json.loads(ln)
+        if s["type"] == "click":
+            rx, ry = round(s["x"] * 999 / sw), round(s["y"] * 999 / sh)
+            n = {1: "left_click", 2: "double_click", 3: "triple_click"}.get(s["clicks"], "left_click")
+            n = "right_click" if s["button"] == "right" else n
+            out.append(f"{i}. {n} at ({rx}, {ry})")
+        elif s["type"] == "type":
+            out.append(f"{i}. type \"{s['text']}\"")
+        elif s["type"] == "key":
+            out.append(f"{i}. press key {'+'.join(s['keys'])}")
+        elif s["type"] == "scroll":
+            out.append(f"{i}. scroll {'up' if s['dy'] > 0 else 'down'}")
+    return (
+        "A human has previously demonstrated exactly this task on this same computer. "
+        "Demonstration steps (coordinates are on the same 1000x1000 grid):\n"
+        + "\n".join(out)
+        + "\nFollow this demonstrated procedure step by step. The current screen should look "
+        "similar; verify each step's effect on the screenshot, re-locate the target element "
+        "if it moved slightly, and only deviate from the demonstration when necessary."
+    )
+
+
+def build_instruction_prompt(instruction, actions, note="", demo=""):
     prev = "\n".join(f"Step {i + 1}: {a}" for i, a in enumerate(actions)) or "None"
     return ("\nPlease generate the next move according to the UI screenshot, instruction and previous actions.\n\n"
-            f"Instruction: {instruction}\n\nPrevious actions:\n{prev}" + (f"\n\n{note}" if note else ""))
+            f"Instruction: {instruction}\n\n" + (f"{demo}\n\n" if demo else "")
+            + f"Previous actions:\n{prev}" + (f"\n\n{note}" if note else ""))
 
 
 def wrap_tool_response(parts):
     return [{"type": "text", "text": "<tool_response>\n"}] + parts + [{"type": "text", "text": "\n</tool_response>"}]
 
 
-def build_messages(instruction, screenshots, responses, actions, note=""):
+def build_messages(instruction, screenshots, responses, actions, note="", demo=""):
     """照搬 history.py: 第一轮 = 截图+指令, 后续轮 = <tool_response>截图</tool_response>; 旧截图折叠成文字."""
     total = len(screenshots)
     collapsed_before = max(0, total - IMAGE_MAX)   # 前 k 步折叠
     msgs = [{"role": "system", "content": [{"type": "text", "text": build_system_prompt()}]}]
-    instr = build_instruction_prompt(instruction, actions, note)
+    instr = build_instruction_prompt(instruction, actions, note, demo)
     for step in range(1, total + 1):
         first = step == 1
         if step <= collapsed_before:
@@ -286,9 +316,13 @@ def main():
     ap.add_argument("task")
     ap.add_argument("--think", action="store_true", help="开启模型 thinking(更准但更慢)")
     ap.add_argument("--confirm", action="store_true", help="每步回车确认")
+    ap.add_argument("--demo", default="", help="演示目录, 如 demos/download_ct (record_demo.py 录的)")
     args = ap.parse_args()
 
     client = OpenAI(base_url=BASE_URL, api_key="EMPTY")
+    demo_text = load_demo(args.demo) if args.demo else ""
+    if demo_text:
+        print(f"[演示模式] 已加载 {args.demo}")
     screenshots, responses, actions = [], [], []
     last_key, repeat = None, 0
 
@@ -302,7 +336,7 @@ def main():
                     "double_click instead of left_click, a different element or position, or a "
                     "keyboard shortcut.")
             temp = 0.6
-        msgs = build_messages(args.task, screenshots, responses, actions, note)
+        msgs = build_messages(args.task, screenshots, responses, actions, note, demo_text)
         print(f"\n===== Step {step}: 请求模型 (截图 {ow}x{oh} -> {rw}x{rh}) =====")
         resp = client.chat.completions.create(
             model=MODEL, messages=msgs, temperature=temp, max_tokens=8192 if args.think else 2048,
