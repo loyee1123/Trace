@@ -83,8 +83,13 @@ ACTION_DESC = """
 def build_tools_def():
     desc = "\n".join([
         "Use a mouse and keyboard to interact with a computer, and take screenshots.",
-        "* This is an interface to a Microsoft Windows 11 desktop GUI. You do not have access to a terminal.",
-        "* Windows conventions: desktop icons need `double_click` to open; taskbar icons, Start menu entries, links and buttons need a single `left_click`. A reliable way to open any application: press the `win` key, type the application name, then press `enter`.",
+        ("* This is an interface to a macOS desktop GUI. You do not have access to a terminal.\n"
+         "* macOS conventions: most items open with a single `left_click`; files in Finder need `double_click`. "
+         "A reliable way to open any application: press key cmd+space (Spotlight), type the application name, then press `enter`."
+         if sys.platform == "darwin" else
+         "* This is an interface to a Microsoft Windows 11 desktop GUI. You do not have access to a terminal.\n"
+         "* Windows conventions: desktop icons need `double_click` to open; taskbar icons, Start menu entries, links and buttons need a single `left_click`. "
+         "A reliable way to open any application: press the `win` key, type the application name, then press `enter`."),
         "* Some applications may take time to start or process actions, so you may need to wait and take successive screenshots to see the results of your actions.",
         "* The screen's resolution is 1000x1000.",
         "* Whenever you intend to move the cursor to click on an element like an icon, you should consult a screenshot to determine the coordinates of the element before moving the cursor.",
@@ -237,7 +242,8 @@ def to_list(v):
 
 
 # ---------- 执行 ----------
-KEY_MAP = {"super": "win", "cmd": "win", "meta": "win", "control": "ctrl", "return": "enter",
+_WINKEY = "command" if sys.platform == "darwin" else "win"
+KEY_MAP = {"super": _WINKEY, "cmd": _WINKEY, "meta": _WINKEY, "win": _WINKEY, "control": "ctrl", "return": "enter",
            "escape": "esc", "page_down": "pagedown", "page_up": "pageup", "arrowup": "up",
            "arrowdown": "down", "arrowleft": "left", "arrowright": "right"}
 
@@ -261,6 +267,11 @@ def robust_click(x, y, button="left", clicks=1):
 def type_text(text):
     if text.isascii():
         pyautogui.typewrite(text, interval=0.02)
+    elif sys.platform == "darwin":
+        import subprocess
+        subprocess.run("pbcopy", input=text.encode(), check=True)
+        time.sleep(0.2)
+        pyautogui.hotkey("command", "v")
     else:
         import subprocess
         subprocess.run("clip", input=text.encode("utf-16-le"), check=True)
