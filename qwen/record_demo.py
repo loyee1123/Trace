@@ -30,7 +30,11 @@ mods = set()
 last_click = {"t": 0, "x": 0, "y": 0, "idx": -1}
 _shot = {"img": None}
 _stop = threading.Event()
-SCREEN_W, SCREEN_H = ImageGrab.grab().size
+try:
+    import pyautogui
+    SCREEN_W, SCREEN_H = pyautogui.size()   # 逻辑分辨率, 与 pynput 坐标一致 (Retina 安全)
+except Exception:
+    SCREEN_W, SCREEN_H = ImageGrab.grab().size
 
 MOD_KEYS = {keyboard.Key.ctrl_l: "ctrl", keyboard.Key.ctrl_r: "ctrl",
             keyboard.Key.alt_l: "alt", keyboard.Key.alt_r: "alt",

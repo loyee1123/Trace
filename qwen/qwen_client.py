@@ -285,7 +285,8 @@ def execute(p, ow, oh):
     coord = p.get("coordinate")
     if coord is not None:
         cx, cy = to_list(coord)[:2]
-        x, y = int(float(cx) * ow / 999), int(float(cy) * oh / 999)   # relative 1000x1000 -> 真实像素
+        sw, sh = pyautogui.size()   # 逻辑分辨率 (Retina 上 != 截图物理像素)
+        x, y = int(float(cx) * sw / 999), int(float(cy) * sh / 999)   # relative 1000x1000 -> 逻辑坐标
     mods = [norm_key(k) for k in str(p.get("text") or "").split("+") if k.strip()] \
         if action in ("left_click", "right_click", "middle_click", "double_click", "triple_click", "scroll", "hscroll") else []
 
